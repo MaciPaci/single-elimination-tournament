@@ -33,3 +33,8 @@ def create_tournament_post():
 @login_required
 def manage_tournament(tournament_id):
     return render_template('tournament_manage.html', tournament_id=tournament_id)
+
+
+@tournament.route('/tournament/list')
+def list_tournament():
+    return render_template('tournament_list.html')
