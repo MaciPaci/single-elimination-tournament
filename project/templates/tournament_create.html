@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Create tournament</h3>
+    <div class="box">
+        <form method="POST" action="/tournament/create">
+            <form method="POST" action="/tournament/create">
+                <div class="field">
+                    <div class="label">
+                        <label class="label">Name</label>
+                    </div>
+                    <div class="control">
+                        <input class="input is-large" type="text" name="name" placeholder="Name" autofocus="">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="label">
+                        <label class="label">Start date</label>
+                    </div>
+                    <input class="input is-large" type="datetime-local" name="start_date" placeholder="Start date"
+                           autofocus="">
+                </div>
+                <div class="field">
+                    <div class="label">
+                        <label class="label">Number of players</label>
+                    </div>
+                    <div class="field">
+                    <div class="select">
+                        <label>
+                            <select name="player_count">
+                                <option>2</option>
+                                <option>4</option>
+                                <option>8</option>
+                                <option>16</option>
+                                <option>32</option>
+                                <option>64</option>
+                            </select>
+                        </label>
+                    </div>
+                    </div>
+                </div>
+
+                <button class="button is-block is-info is-large is-fullwidth">Create</button>
+            </form>
+        </form>
+    </div>
+</div>
+{% endblock %}
