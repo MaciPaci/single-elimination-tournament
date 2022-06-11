@@ -37,4 +37,5 @@ def manage_tournament(tournament_id):
 
 @tournament.route('/tournament/list')
 def list_tournament():
-    return render_template('tournament_list.html')
+    tournaments_list = Tournament.query.all()
+    return render_template('tournament_list.html', list_of_tournaments=tournaments_list)
