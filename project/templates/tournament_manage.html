@@ -1,8 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-    Manage {{ tournament_id }}!
-    TODO
-</h1>
+<div class="tile is-ancestor">
+    <div class="tile is-parent is-4">
+        <div class="tile box is-child">
+            <div class="tile is-parent">
+                <div class="tile is-10 is-child">
+                    <p class="title is-3 has-text-black">Players</p>
+                </div>
+                <div class="tile is-2 is-child">
+                    <button class="button is-success">
+                        Add
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                    <tr>
+                        <th>Player name</th>
+                        <th>Remove</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in list_of_players %}
+                    <tr>
+                        <td>{{ player.name }}</td>
+                        <td>
+                            <button class="button is-danger">
+                                <a href="{{ url_for('tournament.remove', tournament_id=tournament.tournament_id) }}">
+                                    Remove
+                                </a>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tile is-parent is-8">
+        <div class="tile is-child box">
+            <p class="title is-3 has-text-black">Two</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor
+                vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
