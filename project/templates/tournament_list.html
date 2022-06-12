@@ -4,26 +4,36 @@
 <h1 class="title">
     List of tournaments
 </h1>
-<table class="table">
-    <thead>
-    <tr>
-        <th><abbr title="ID">ID</abbr></th>
-        <th><abbr title="TournamentID">Tournament ID</abbr></th>
-        <th><abbr title="Name">Name</abbr></th>
-        <th><abbr title="StartDate">Start Date</abbr></th>
-        <th><abbr title="PlayerCount">Number of contenders</abbr></th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for tournament in list_of_tournaments %}
-    <tr>
-        <td>{{ tournament.id }}</td>
-        <td>{{ tournament.tournament_id }}</td>
-        <td>{{ tournament.name }}</td>
-        <td>{{ tournament.start_date }}</td>
-        <td>{{ tournament.player_count }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tournament ID</th>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>Number of contenders</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tournament in list_of_tournaments %}
+        <tr>
+            <td>{{ tournament.id }}</td>
+            <td>{{ tournament.tournament_id }}/td>
+            <td>{{ tournament.name }}</td>
+            <td>{{ tournament.start_date }}</td>
+            <td>{{ tournament.player_count }}</td>
+            <td>
+            <button class="button is-primary" name="manage_button" value="{{ tournament.id }}">
+                <a href="{{ url_for('tournament.manage', tournament_id=tournament.tournament_id) }}">
+                    Manage
+                </a>
+            </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
