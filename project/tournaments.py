@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 import uuid
 from . import db
-from .models import Tournament
+from .models import Tournament, Player
 from flask_login import login_required
 
 tournament = Blueprint('tournament', __name__)
@@ -37,6 +37,28 @@ def create_post():
 @tournament.route('/tournament/<string:tournament_id>')
 @login_required
 def manage(tournament_id):
+    return render_template('tournament_manage.html', tournament_id=tournament_id)
+
+
+@tournament.route('/tournament/<string:tournament_id>', methods=['POST'])
+@login_required
+def manage_post(tournament_id):
+    name = request.form.get('name')
+
+    if name == "":
+        flash('Please fill all fields.')
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+
+    player = Player.query.filter_by(name=name, tournament_id=tournament_id).first()
+
+    if player:
+        flash('Player already enrolled into the tournament')
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+
+    new_player = Player(name=name, tournament_id=tournament_id)
+
+    db.session.add(new_player)
+    db.session.commit()
     return render_template('tournament_manage.html', tournament_id=tournament_id)
 
 
