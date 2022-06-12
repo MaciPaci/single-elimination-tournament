@@ -37,7 +37,8 @@ def create_post():
 @tournament.route('/tournament/<string:tournament_id>')
 @login_required
 def manage(tournament_id):
-    return render_template('tournament_manage.html', tournament_id=tournament_id)
+    player_list = Player.query.all()
+    return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list)
 
 
 @tournament.route('/tournament/<string:tournament_id>', methods=['POST'])
@@ -59,7 +60,10 @@ def manage_post(tournament_id):
 
     db.session.add(new_player)
     db.session.commit()
-    return render_template('tournament_manage.html', tournament_id=tournament_id)
+
+    player_list = Player.query.all()
+
+    return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list)
 
 
 @tournament.route('/tournament/list')
