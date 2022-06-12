@@ -11,25 +11,33 @@
             <th>ID</th>
             <th>Tournament ID</th>
             <th>Name</th>
-            <th>Start Date</th>
+            <th>Start DateTime</th>
             <th>Number of contenders</th>
-            <th></th>
+            <th>Manage</th>
+            <th>Remove</th>
         </tr>
         </thead>
         <tbody>
         {% for tournament in list_of_tournaments %}
         <tr>
             <td>{{ tournament.id }}</td>
-            <td>{{ tournament.tournament_id }}/td>
+            <td>{{ tournament.tournament_id }}</td>
             <td>{{ tournament.name }}</td>
             <td>{{ tournament.start_date }}</td>
             <td>{{ tournament.player_count }}</td>
             <td>
-            <button class="button is-primary" name="manage_button" value="{{ tournament.id }}">
-                <a href="{{ url_for('tournament.manage', tournament_id=tournament.tournament_id) }}">
-                    Manage
-                </a>
-            </button>
+                <button class="button is-primary" name="manage_button" value="{{ tournament.id }}">
+                    <a href="{{ url_for('tournament.manage', tournament_id=tournament.tournament_id) }}">
+                        Manage
+                    </a>
+                </button>
+            </td>
+            <td>
+                <button class="button is-danger">
+                    <a href="{{ url_for('tournament.remove', tournament_id=tournament.tournament_id) }}">
+                    Remove
+                    </a>
+                </button>
             </td>
         </tr>
         {% endfor %}

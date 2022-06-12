@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 import uuid
 from . import db
 from .models import Tournament
@@ -19,6 +19,11 @@ def create_post():
     name = request.form.get('name')
     start_date = request.form.get('start_date')
     player_count = request.form.get('player_count')
+
+    if name == "" or start_date == "":
+        flash('Please fill all fields.')
+        return redirect(url_for('tournament.create'))
+
     id = uuid.uuid4().hex
 
     new_tournament = Tournament(tournament_id=id, name=name, start_date=start_date, player_count=player_count)
@@ -38,7 +43,13 @@ def manage(tournament_id):
 @tournament.route('/tournament/list')
 def list():
     if request.form.get("manage_button"):
-        # return redirect(url_for('tournament.manage_tournament', tournament_id=
         print(request.form.get("manage_button"))
     tournaments_list = Tournament.query.all()
     return render_template('tournament_list.html', list_of_tournaments=tournaments_list)
+
+
+@tournament.route('/tournament/remove/<string:tournament_id>')
+def remove(tournament_id):
+    Tournament.query.filter_by(tournament_id=tournament_id).delete()
+    db.session.commit()
+    return redirect(url_for('tournament.list'))
