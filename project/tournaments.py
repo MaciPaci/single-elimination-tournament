@@ -56,7 +56,7 @@ def manage_post(tournament_id):
         flash('Player already enrolled into the tournament')
         return redirect(url_for('tournament.manage', tournament_id=tournament_id))
 
-    new_player = Player(name=name, tournament_id=tournament_id)
+    new_player = Player(tournament_id=tournament_id, name=name)
 
     db.session.add(new_player)
     db.session.commit()
@@ -65,6 +65,13 @@ def manage_post(tournament_id):
 
     return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list)
 
+
+@tournament.route('/tournament/<string:tournament_id>/<string:name>')
+@login_required
+def manage_delete(tournament_id, name):
+    Player.query.filter_by(tournament_id=tournament_id, name=name).delete()
+    db.session.commit()
+    return redirect(url_for('tournament.manage', tournament_id=tournament_id))
 
 @tournament.route('/tournament/list')
 def list():

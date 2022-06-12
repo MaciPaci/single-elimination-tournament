@@ -41,7 +41,9 @@
                         <td>{{ player.name }}</td>
                         <td>
                             <button class="button is-danger">
-                                Remove
+                                <a href="{{ url_for('tournament.manage_delete', tournament_id=tournament_id, name=player.name) }}">
+                                    Remove
+                                </a>
                             </button>
                         </td>
                     </tr>
@@ -82,7 +84,11 @@
                     <button class="button is-success">
                         Add player
                     </button>
-                    <button class="button">Cancel</button>
+                    <button class="button">
+                        <a href="{{ url_for('tournament.manage', tournament_id=tournament_id) }}">
+                            Cancel
+                        </a>
+                    </button>
                 </form>
             </div>
         </section>

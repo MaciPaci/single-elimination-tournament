@@ -18,6 +18,5 @@ class Tournament(db.Model):
 
 
 class Player(db.Model):
-    id = db.Column(db.Integer, unique=True)
     tournament_id = db.Column(db.String(100), primary_key=True)
     name = db.Column(db.String(1000), primary_key=True)
