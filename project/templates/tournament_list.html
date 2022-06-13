@@ -25,14 +25,14 @@
             <td>{{ tournament.name }}</td>
             <td>{{ tournament.start_date }}</td>
             <td>{{ tournament.player_count }}</td>
-            <td>
+            <td style="width: 100px;">
                 <button class="button is-primary" name="manage_button" value="{{ tournament.id }}">
                     <a href="{{ url_for('tournament.manage', tournament_id=tournament.tournament_id) }}">
                         Manage
                     </a>
                 </button>
             </td>
-            <td>
+            <td style="width: 100px;">
                 <button class="button is-danger">
                     <a href="{{ url_for('tournament.remove', tournament_id=tournament.tournament_id) }}">
                     Remove
