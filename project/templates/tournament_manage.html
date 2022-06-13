@@ -69,8 +69,8 @@
             </div>
             <div class="tile is-parent">
                 <div class="table-container">
-
                     {% for match in list_of_matches %}
+                    <form method="GET" id="form{{ match.id }}"></form>
                     <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
                         <thead>
                         <tr>
@@ -78,18 +78,22 @@
                             <th></th>
                             <th></th>
                             <th>Player 2</th>
+                            <th>Save scores</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td>{{ match.player1_name }}</td>
-                            <td>{{ match.player1_score }}</td>
-                            <td>{{ match.player2_score }}</td>
+                            <td><input class="input is-small" type="text" size="3" form="form{{ match.id }}"/></td>
+                            <td><input class="input is-small" type="text" size="3" form="form{{ match.id }}"/></td>
                             <td>{{ match.player2_name }}</td>
+                            <td>
+                                <button class="button is-block is-success small">Save</button>
+                            </td>
                         </tr>
                         </tbody>
-
                     </table>
+
                     {% endfor %}
                 </div>
             </div>

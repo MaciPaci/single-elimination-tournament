@@ -112,8 +112,7 @@ def generate_bracket(tournament_id):
     pool1, pool2 = player_list[:half], player_list[half:]
     for (player1, player2) in zip(pool1, pool2):
         new_match = Match(id=uuid.uuid4().hex, tournament_id=tournament_id, player1_name=player1.name,
-                          player2_name=player2.name,
-                          player1_score=0, player2_score=0)
+                          player2_name=player2.name, player1_score=0, player2_score=0, phase=1)
         db.session.add(new_match)
     db.session.commit()
     return redirect(url_for('tournament.manage', tournament_id=tournament_id))
