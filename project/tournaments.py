@@ -38,8 +38,8 @@ def create_post():
 @tournament.route('/tournament/<string:tournament_id>')
 @login_required
 def manage(tournament_id):
-    player_list = Player.query.all()
-    match_list = Match.query.all()
+    player_list = Player.query.filter_by(tournament_id=tournament_id)
+    match_list = Match.query.filter_by(tournament_id=tournament_id)
     return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list,
                            list_of_matches=match_list)
 
@@ -70,7 +70,7 @@ def manage_post(tournament_id):
     db.session.add(new_player)
     db.session.commit()
 
-    player_list = Player.query.all()
+    player_list = Player.query.filter_by(tournament_id=tournament_id)
 
     return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list)
 
@@ -101,19 +101,19 @@ def remove(tournament_id):
 
 @tournament.route('/tournament/bracket/generate/<string:tournament_id>')
 def generate_bracket(tournament_id):
-    bracket = Match.query.all()
+    bracket = Match.query.filter_by(tournament_id=tournament_id).all()
     if bracket:
         flash('Bracket already generated')
         return redirect(url_for('tournament.manage', tournament_id=tournament_id))
 
-    player_list = Player.query.all()
+    player_list = Player.query.filter_by(tournament_id=tournament_id).all()
     random.shuffle(player_list)
     half = len(player_list) // 2
     pool1, pool2 = player_list[:half], player_list[half:]
     for (player1, player2) in zip(pool1, pool2):
         new_match = Match(id=uuid.uuid4().hex, tournament_id=tournament_id, player1_name=player1.name,
                           player2_name=player2.name,
-                          player1_result=0, player2_result=0)
+                          player1_score=0, player2_score=0)
         db.session.add(new_match)
     db.session.commit()
     return redirect(url_for('tournament.manage', tournament_id=tournament_id))

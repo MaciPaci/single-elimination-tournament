@@ -29,5 +29,6 @@ class Match(db.Model):
     tournament_id = db.Column(db.String(100))
     player1_name = db.Column(db.String(1000))
     player2_name = db.Column(db.String(1000))
-    player1_result = db.Column(db.Integer)
-    player2_result = db.Column(db.Integer)
+    player1_score = db.Column(db.Integer)
+    player2_score = db.Column(db.Integer)
+    phase = db.Column(db.Integer)

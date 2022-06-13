@@ -54,7 +54,7 @@
         </div>
     </div>
     <div class="tile is-parent is-8">
-        <div class="tile is-child box">
+        <div class="tile box is-child">
             <div class="tile is-parent">
                 <div class="tile is-10 is-child">
                     <p class="title is-3 has-text-black">Tournament bracket</p>
@@ -65,6 +65,32 @@
                             Generate bracket
                         </a>
                     </button>
+                </div>
+            </div>
+            <div class="tile is-parent">
+                <div class="table-container">
+
+                    {% for match in list_of_matches %}
+                    <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
+                        <thead>
+                        <tr>
+                            <th>Player 1</th>
+                            <th></th>
+                            <th></th>
+                            <th>Player 2</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ match.player1_name }}</td>
+                            <td>{{ match.player1_score }}</td>
+                            <td>{{ match.player2_score }}</td>
+                            <td>{{ match.player2_name }}</td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                    {% endfor %}
                 </div>
             </div>
         </div>
