@@ -5,7 +5,6 @@ from . import db
 from .models import Tournament, Player, Match
 from flask_login import login_required
 
-
 tournament = Blueprint('tournament', __name__)
 
 
@@ -41,7 +40,8 @@ def create_post():
 def manage(tournament_id):
     player_list = Player.query.all()
     match_list = Match.query.all()
-    return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list, list_of_matches=match_list)
+    return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list,
+                           list_of_matches=match_list)
 
 
 @tournament.route('/tournament/<string:tournament_id>', methods=['POST'])
@@ -51,6 +51,12 @@ def manage_post(tournament_id):
 
     if name == "":
         flash('Please fill all fields.')
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+
+    players = Player.query.filter_by(tournament_id=tournament_id).all()
+    tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
+    if len(players) >= int(tournament.player_count):
+        flash('Maximum number of players reached')
         return redirect(url_for('tournament.manage', tournament_id=tournament_id))
 
     player = Player.query.filter_by(name=name, tournament_id=tournament_id).first()
@@ -102,10 +108,11 @@ def generate_bracket(tournament_id):
 
     player_list = Player.query.all()
     random.shuffle(player_list)
-    half = len(player_list)//2
+    half = len(player_list) // 2
     pool1, pool2 = player_list[:half], player_list[half:]
     for (player1, player2) in zip(pool1, pool2):
-        new_match = Match(id=uuid.uuid4().hex, tournament_id=tournament_id, player1_name=player1.name, player2_name=player2.name,
+        new_match = Match(id=uuid.uuid4().hex, tournament_id=tournament_id, player1_name=player1.name,
+                          player2_name=player2.name,
                           player1_result=0, player2_result=0)
         db.session.add(new_match)
     db.session.commit()
