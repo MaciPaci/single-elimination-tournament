@@ -1,4 +1,6 @@
 from flask_login import UserMixin
+from sqlalchemy import Integer
+
 from . import db
 
 
@@ -20,3 +22,12 @@ class Tournament(db.Model):
 class Player(db.Model):
     tournament_id = db.Column(db.String(100), primary_key=True)
     name = db.Column(db.String(1000), primary_key=True)
+
+
+class Match(db.Model):
+    id = db.Column(db.String(100), primary_key=True)
+    tournament_id = db.Column(db.String(100))
+    player1_name = db.Column(db.String(1000))
+    player2_name = db.Column(db.String(1000))
+    player1_result = db.Column(db.Integer)
+    player2_result = db.Column(db.Integer)

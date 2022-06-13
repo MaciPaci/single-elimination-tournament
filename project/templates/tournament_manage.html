@@ -55,9 +55,18 @@
     </div>
     <div class="tile is-parent is-8">
         <div class="tile is-child box">
-            <p class="title is-3 has-text-black">Two</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor
-                vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+            <div class="tile is-parent">
+                <div class="tile is-10 is-child">
+                    <p class="title is-3 has-text-black">Tournament bracket</p>
+                </div>
+                <div class="tile is-2 is-child">
+                    <button class="button is-success">
+                        <a href="{{ url_for('tournament.generate_bracket', tournament_id=tournament_id)}}">
+                            Generate bracket
+                        </a>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
