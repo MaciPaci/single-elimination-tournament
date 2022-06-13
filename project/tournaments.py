@@ -84,5 +84,6 @@ def list():
 @tournament.route('/tournament/remove/<string:tournament_id>')
 def remove(tournament_id):
     Tournament.query.filter_by(tournament_id=tournament_id).delete()
+    Player.query.filter_by(tournament_id=tournament_id).delete()
     db.session.commit()
     return redirect(url_for('tournament.list'))
