@@ -17,6 +17,7 @@ class Tournament(db.Model):
     name = db.Column(db.String(1000))
     start_date = db.Column(db.String(100))
     player_count = db.Column(db.String(10))
+    winner = db.Column(db.String(1000))
 
 
 class Player(db.Model):

@@ -40,15 +40,17 @@ def create_post():
 def manage(tournament_id):
     phase = request.args.get('phase')
     if not phase:
-        phase = 1
+        phase = "1"
     player_list = Player.query.filter_by(tournament_id=tournament_id)
     match_list = Match.query.filter_by(tournament_id=tournament_id, phase=phase)
     grouped_matches = Match.query.filter_by(tournament_id=tournament_id).group_by('phase').all()
-    phases = []
+    phases = [0]
     for match in grouped_matches:
         phases.append(int(match.phase))
+    tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
+    winner = tournament.winner
     return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list,
-                           list_of_matches=match_list, phases=phases, phase=phase)
+                           list_of_matches=match_list, phases=phases, phase=phase, winner=winner)
 
 
 @tournament.route('/tournament/<string:tournament_id>', methods=['POST'])
@@ -152,14 +154,22 @@ def save_score(tournament_id, match_id, phase):
 
 @tournament.route('/tournament/<string:tournament_id>/phase/<int:phase>')
 def generate_next_phase(tournament_id, phase):
+    if phase == 0:
+        flash('This is a final phase')
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=0))
     matches = Match.query.filter_by(tournament_id=tournament_id, phase=phase).all()
 
     next_phase = phase + 1
     players = []
+
+    if not matches:
+        flash('Generate bracket first')
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=next_phase))
+
     for match in matches:
         if match.player1_score == 0 and match.player2_score == 0:
             flash('Cannot determine a winner. Resolve all drawn matches')
-            return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=phase))
+            return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=next_phase))
         if match.player1_score > match.player2_score:
             player = Player.query.filter_by(name=match.player1_name).first()
             players.append(player)
@@ -168,8 +178,10 @@ def generate_next_phase(tournament_id, phase):
             players.append(player)
 
     if len(players) == 1:
-        # TODO show winner
-        pass
+        tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
+        tournament.winner = players[0].name
+        db.session.commit()
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=0))
 
     random.shuffle(players)
     half = len(players) // 2

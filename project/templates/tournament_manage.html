@@ -70,6 +70,8 @@
             <div class="tile">
                 <div class="field is-grouped">
                     {% for phase in phases %}
+                    {% if phase == 0 %}
+                    {% else %}
                     <p class="control">
                         <button class="button is-info is-outlined">
                             <a href="{{ url_for('tournament.manage', tournament_id=tournament_id, phase=phase) }}">
@@ -77,11 +79,24 @@
                             </a>
                         </button>
                     </p>
+                    {% endif %}
                     {% endfor %}
+                    <p class="control">
+                        <button class="button is-info is-outlined">
+                            <a href="{{ url_for('tournament.manage', tournament_id=tournament_id, phase=phase) }}">
+                                Winner
+                            </a>
+                        </button>
+                    </p>
                 </div>
             </div>
             <div class="tile is-parent">
                 <div class="table-container">
+                    {% if phase == "0" %}
+                    <div class="tile is-child">
+                        <p class="title has-text-black">Winner is {{ winner }}</p>
+                    </div>
+                    {% else %}
                     {% for match in list_of_matches %}
                     <form method="POST" id="form{{ match.id }}" action="{{ tournament_id }}/score/save/{{ match.id }}/{{ match.phase }}">
                         <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
@@ -116,6 +131,7 @@
                         </table>
                     </form>
                     {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="tile">
