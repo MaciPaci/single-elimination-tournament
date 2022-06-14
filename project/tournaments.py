@@ -38,14 +38,17 @@ def create_post():
 @tournament.route('/tournament/<string:tournament_id>')
 @login_required
 def manage(tournament_id):
+    phase = request.args.get('phase')
+    if not phase:
+        phase = 1
     player_list = Player.query.filter_by(tournament_id=tournament_id)
-    match_list = Match.query.filter_by(tournament_id=tournament_id)
+    match_list = Match.query.filter_by(tournament_id=tournament_id, phase=phase)
     grouped_matches = Match.query.filter_by(tournament_id=tournament_id).group_by('phase').all()
     phases = []
     for match in grouped_matches:
         phases.append(int(match.phase))
     return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list,
-                           list_of_matches=match_list, phases=phases)
+                           list_of_matches=match_list, phases=phases, phase=phase)
 
 
 @tournament.route('/tournament/<string:tournament_id>', methods=['POST'])
@@ -76,7 +79,7 @@ def manage_post(tournament_id):
 
     player_list = Player.query.filter_by(tournament_id=tournament_id)
 
-    return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list)
+    return redirect(url_for('tournament.manage', tournament_id=tournament_id, list_of_players=player_list))
 
 
 @tournament.route('/tournament/<string:tournament_id>/<string:name>')
@@ -128,8 +131,8 @@ def generate_bracket(tournament_id):
     return redirect(url_for('tournament.manage', tournament_id=tournament_id))
 
 
-@tournament.route('/tournament/<string:tournament_id>/score/save/<string:match_id>', methods=['POST'])
-def save_score(tournament_id, match_id):
+@tournament.route('/tournament/<string:tournament_id>/score/save/<string:match_id>/<string:phase>', methods=['POST'])
+def save_score(tournament_id, match_id, phase):
     score1 = request.form.get('score1')
     score2 = request.form.get('score2')
 
@@ -144,4 +147,36 @@ def save_score(tournament_id, match_id):
 
     db.session.commit()
 
-    return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=phase))
+
+
+@tournament.route('/tournament/<string:tournament_id>/phase/<int:phase>')
+def generate_next_phase(tournament_id, phase):
+    matches = Match.query.filter_by(tournament_id=tournament_id, phase=phase).all()
+
+    next_phase = phase + 1
+    players = []
+    for match in matches:
+        if match.player1_score == 0 and match.player2_score == 0:
+            flash('Cannot determine a winner. Resolve all drawn matches')
+            return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=phase))
+        if match.player1_score > match.player2_score:
+            player = Player.query.filter_by(name=match.player1_name).first()
+            players.append(player)
+        else:
+            player = Player.query.filter_by(name=match.player2_name).first()
+            players.append(player)
+
+    if len(players) == 1:
+        # TODO show winner
+        pass
+
+    random.shuffle(players)
+    half = len(players) // 2
+    pool1, pool2 = players[:half], players[half:]
+    for (player1, player2) in zip(pool1, pool2):
+        new_match = Match(id=uuid.uuid4().hex, tournament_id=tournament_id, player1_name=player1.name,
+                          player2_name=player2.name, player1_score=0, player2_score=0, phase=next_phase)
+        db.session.add(new_match)
+    db.session.commit()
+    return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=next_phase))

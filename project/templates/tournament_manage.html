@@ -72,7 +72,9 @@
                     {% for phase in phases %}
                     <p class="control">
                         <button class="button is-info is-outlined">
+                            <a href="{{ url_for('tournament.manage', tournament_id=tournament_id, phase=phase) }}">
                             Phase {{ phase }}
+                            </a>
                         </button>
                     </p>
                     {% endfor %}
@@ -81,7 +83,7 @@
             <div class="tile is-parent">
                 <div class="table-container">
                     {% for match in list_of_matches %}
-                    <form method="POST" id="form{{ match.id }}" action="{{ tournament_id }}/score/save/{{ match.id }}">
+                    <form method="POST" id="form{{ match.id }}" action="{{ tournament_id }}/score/save/{{ match.id }}/{{ match.phase }}">
                         <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
                             <thead>
                             <tr>
@@ -115,6 +117,13 @@
                     </form>
                     {% endfor %}
                 </div>
+            </div>
+            <div class="tile">
+                <button class="button is-success small">
+                    <a href="{{ url_for('tournament.generate_next_phase', tournament_id=tournament_id, phase=phase)}}">
+                        Generate next phase
+                    </a>
+                </button>
             </div>
         </div>
     </div>
