@@ -67,38 +67,51 @@
                     </button>
                 </div>
             </div>
+            <div class="tile">
+                <div class="field is-grouped">
+                    {% for phase in phases %}
+                    <p class="control">
+                        <button class="button is-info is-outlined">
+                            Phase {{ phase }}
+                        </button>
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
             <div class="tile is-parent">
                 <div class="table-container">
                     {% for match in list_of_matches %}
                     <form method="POST" id="form{{ match.id }}" action="{{ tournament_id }}/score/save/{{ match.id }}">
-                    <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
-                        <thead>
-                        <tr>
-                            <th>Player 1</th>
-                            <th></th>
-                            <th></th>
-                            <th>Player 2</th>
-                            <th>Save scores</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>{{ match.player1_name }}</td>
-                            <td>
-                                <input class="input is-normal" type="text" size="3" name="score1" placeholder="{{ match.player1_score }}"
-                                       form="form{{ match.id }}"/>
-                            </td>
-                            <td><input class="input is-normal" type="text" size="3" name="score2" placeholder="{{ match.player2_score }}"
-                                       form="form{{ match.id }}"/></td>
-                            <td>{{ match.player2_name }}</td>
-                            <td>
-                                <button class="button is-block is-success small">
-                                   Save
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
+                            <thead>
+                            <tr>
+                                <th>Player 1</th>
+                                <th></th>
+                                <th></th>
+                                <th>Player 2</th>
+                                <th>Save scores</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ match.player1_name }}</td>
+                                <td>
+                                    <input class="input is-normal" type="text" size="3" name="score1"
+                                           placeholder="{{ match.player1_score }}"
+                                           form="form{{ match.id }}"/>
+                                </td>
+                                <td><input class="input is-normal" type="text" size="3" name="score2"
+                                           placeholder="{{ match.player2_score }}"
+                                           form="form{{ match.id }}"/></td>
+                                <td>{{ match.player2_name }}</td>
+                                <td>
+                                    <button class="button is-block is-success small">
+                                        Save
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </form>
                     {% endfor %}
                 </div>

@@ -40,8 +40,12 @@ def create_post():
 def manage(tournament_id):
     player_list = Player.query.filter_by(tournament_id=tournament_id)
     match_list = Match.query.filter_by(tournament_id=tournament_id)
+    grouped_matches = Match.query.filter_by(tournament_id=tournament_id).group_by('phase').all()
+    phases = []
+    for match in grouped_matches:
+        phases.append(int(match.phase))
     return render_template('tournament_manage.html', tournament_id=tournament_id, list_of_players=player_list,
-                           list_of_matches=match_list)
+                           list_of_matches=match_list, phases=phases)
 
 
 @tournament.route('/tournament/<string:tournament_id>', methods=['POST'])
