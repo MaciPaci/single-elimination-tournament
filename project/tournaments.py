@@ -99,7 +99,7 @@ def remove(tournament_id):
     return redirect(url_for('tournament.list'))
 
 
-@tournament.route('/tournament/bracket/generate/<string:tournament_id>')
+@tournament.route('/tournament/<string:tournament_id>/bracket/generate')
 def generate_bracket(tournament_id):
     bracket = Match.query.filter_by(tournament_id=tournament_id).all()
     if bracket:
@@ -107,6 +107,12 @@ def generate_bracket(tournament_id):
         return redirect(url_for('tournament.manage', tournament_id=tournament_id))
 
     player_list = Player.query.filter_by(tournament_id=tournament_id).all()
+    tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
+
+    if len(player_list) < int(tournament.player_count):
+        flash('Please fill out all the players before generating the bracket')
+        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+
     random.shuffle(player_list)
     half = len(player_list) // 2
     pool1, pool2 = player_list[:half], player_list[half:]
@@ -115,4 +121,23 @@ def generate_bracket(tournament_id):
                           player2_name=player2.name, player1_score=0, player2_score=0, phase=1)
         db.session.add(new_match)
     db.session.commit()
+    return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+
+
+@tournament.route('/tournament/<string:tournament_id>/score/save/<string:match_id>', methods=['POST'])
+def save_score(tournament_id, match_id):
+    score1 = request.form.get('score1')
+    score2 = request.form.get('score2')
+
+    if score1 == "":
+        score1 = "0"
+    if score2 == "":
+        score2 = "0"
+
+    match = Match.query.filter_by(id=match_id).first()
+    match.player1_score = int(score1)
+    match.player2_score = int(score2)
+
+    db.session.commit()
+
     return redirect(url_for('tournament.manage', tournament_id=tournament_id))
