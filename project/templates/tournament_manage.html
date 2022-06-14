@@ -93,9 +93,15 @@
             <div class="tile is-parent">
                 <div class="table-container">
                     {% if phase == "0" %}
+                    {% if winner == None %}
+                    <div class="tile is-child">
+                        <p class="title has-text-black">There is no winner yet</p>
+                    </div>
+                    {% else %}
                     <div class="tile is-child">
                         <p class="title has-text-black">Winner is {{ winner }}</p>
                     </div>
+                    {% endif %}
                     {% else %}
                     {% for match in list_of_matches %}
                     <form method="POST" id="form{{ match.id }}" action="{{ tournament_id }}/score/save/{{ match.id }}/{{ match.phase }}">
