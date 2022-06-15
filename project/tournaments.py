@@ -39,7 +39,6 @@ def create_post():
 
 
 @tournament.route('/tournament/<string:tournament_id>')
-@login_required
 def manage(tournament_id):
     phase = request.args.get('phase')
     if not phase:
@@ -123,6 +122,7 @@ def list():
 
 
 @tournament.route('/tournament/remove/<string:tournament_id>')
+@login_required
 def remove(tournament_id):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
@@ -141,6 +141,7 @@ def remove(tournament_id):
 
 
 @tournament.route('/tournament/<string:tournament_id>/bracket/generate')
+@login_required
 def generate_bracket(tournament_id):
     player_list = Player.query.filter_by(tournament_id=tournament_id).all()
     bracket = Match.query.filter_by(tournament_id=tournament_id).all()
@@ -174,6 +175,7 @@ def generate_bracket(tournament_id):
 
 
 @tournament.route('/tournament/<string:tournament_id>/score/save/<string:match_id>/<string:phase>', methods=['POST'])
+@login_required
 def save_score(tournament_id, match_id, phase):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
@@ -203,6 +205,7 @@ def save_score(tournament_id, match_id, phase):
 
 
 @tournament.route('/tournament/<string:tournament_id>/phase/<int:phase>')
+@login_required
 def generate_next_phase(tournament_id, phase):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
