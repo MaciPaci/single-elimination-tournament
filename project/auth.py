@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
 from . import db
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 auth = Blueprint('auth', __name__)
 
@@ -68,6 +68,8 @@ def logout():
 @auth.route('/users/manage')
 @login_required
 def manage_users():
+    if current_user.is_admin is False:
+        return redirect(url_for('main.index'))
     users = User.query.all()
     return render_template('users_manage.html', list_of_users=users)
 
@@ -75,6 +77,8 @@ def manage_users():
 @auth.route('/users/remove/<string:user_id>')
 @login_required
 def remove_user(user_id):
+    if current_user.is_admin is False:
+        return redirect(url_for('main.index'))
     User.query.filter_by(id=user_id).delete()
     db.session.commit()
     return redirect(url_for('auth.manage_users'))
@@ -83,6 +87,8 @@ def remove_user(user_id):
 @auth.route('/users/admin/<string:user_id>')
 @login_required
 def change_admin_privileges(user_id):
+    if current_user.is_admin is False:
+        return redirect(url_for('main.index'))
     user = User.query.filter_by(id=user_id).first()
     user.is_admin = not user.is_admin
     db.session.commit()

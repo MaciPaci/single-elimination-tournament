@@ -46,7 +46,7 @@
                         </a>
                         {% endif %}
 
-                        {% if current_user.is_authenticated %}
+                        {% if current_user.is_admin %}
                         <a href="{{ url_for('auth.manage_users') }}" class="navbar-item">
                             User management
                         </a>
