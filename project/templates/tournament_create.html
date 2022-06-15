@@ -12,26 +12,26 @@
         {% endif %}
         {% endwith %}
         <form method="POST" action="/tournament/create">
-                <div class="field">
-                    <div class="label">
-                        <label class="label">Name</label>
-                    </div>
-                    <div class="control">
-                        <input class="input is-large" type="text" name="name" placeholder="Name" autofocus="">
-                    </div>
+            <div class="field">
+                <div class="label">
+                    <label class="label">Name</label>
+                </div>
+                <div class="control">
+                    <input class="input is-large" type="text" name="name" placeholder="Name" autofocus="">
+                </div>
+            </div>
+            <div class="field">
+                <div class="label">
+                    <label class="label">Start date</label>
+                </div>
+                <input class="input is-large" type="datetime-local" name="start_date" placeholder="Start date"
+                       autofocus="">
+            </div>
+            <div class="field">
+                <div class="label">
+                    <label class="label">Number of players</label>
                 </div>
                 <div class="field">
-                    <div class="label">
-                        <label class="label">Start date</label>
-                    </div>
-                    <input class="input is-large" type="datetime-local" name="start_date" placeholder="Start date"
-                           autofocus="">
-                </div>
-                <div class="field">
-                    <div class="label">
-                        <label class="label">Number of players</label>
-                    </div>
-                    <div class="field">
                     <div class="select">
                         <label>
                             <select name="player_count">
@@ -45,11 +45,11 @@
                             </select>
                         </label>
                     </div>
-                    </div>
                 </div>
+            </div>
 
-                <button class="button is-block is-info is-large is-fullwidth">Create</button>
-            </form>
+            <button class="button is-block is-info is-large is-fullwidth">Create</button>
+        </form>
     </div>
 </div>
 {% endblock %}

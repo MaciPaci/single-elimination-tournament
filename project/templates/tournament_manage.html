@@ -75,7 +75,7 @@
                     <p class="control">
                         <button class="button is-info is-outlined">
                             <a href="{{ url_for('tournament.manage', tournament_id=tournament_id, phase=phase) }}">
-                            Phase {{ phase }}
+                                Phase {{ phase }}
                             </a>
                         </button>
                     </p>
@@ -104,7 +104,8 @@
                     {% endif %}
                     {% else %}
                     {% for match in list_of_matches %}
-                    <form method="POST" id="form{{ match.id }}" action="{{ tournament_id }}/score/save/{{ match.id }}/{{ match.phase }}">
+                    <form method="POST" id="form{{ match.id }}"
+                          action="{{ tournament_id }}/score/save/{{ match.id }}/{{ match.phase }}">
                         <table class="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
                             <thead>
                             <tr>
