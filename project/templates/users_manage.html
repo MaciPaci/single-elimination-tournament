@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+    List of users
+</h1>
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Is admin</th>
+            <th>Manage</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in list_of_users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.is_admin }}</td>
+            <td style="width: 100px;">
+                <button class="button is-primary" name="manage_button">
+                    <a href="{{ url_for('auth.change_admin_privileges', user_id=user.id) }}">
+                        Give/take admin
+                    </a>
+                </button>
+            </td>
+            <td style="width: 100px;">
+                <button class="button is-danger">
+                    <a href="{{ url_for('auth.remove_user', user_id=user.id) }}">
+                        Remove
+                    </a>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

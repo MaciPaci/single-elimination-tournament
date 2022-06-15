@@ -49,7 +49,8 @@ def signup_post():
 
     uuid_id = uuid.uuid4().hex
 
-    new_user = User(id=uuid_id, email=email, name=name, password=generate_password_hash(password, method='sha256'), is_admin=False)
+    new_user = User(id=uuid_id, email=email, name=name, password=generate_password_hash(password, method='sha256'),
+                    is_admin=False)
 
     db.session.add(new_user)
     db.session.commit()
@@ -62,3 +63,27 @@ def signup_post():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+
+@auth.route('/users/manage')
+@login_required
+def manage_users():
+    users = User.query.all()
+    return render_template('users_manage.html', list_of_users=users)
+
+
+@auth.route('/users/remove/<string:user_id>')
+@login_required
+def remove_user(user_id):
+    User.query.filter_by(id=user_id).delete()
+    db.session.commit()
+    return redirect(url_for('auth.manage_users'))
+
+
+@auth.route('/users/admin/<string:user_id>')
+@login_required
+def change_admin_privileges(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    user.is_admin = not user.is_admin
+    db.session.commit()
+    return redirect(url_for('auth.manage_users'))
