@@ -8,6 +8,12 @@ from datetime import datetime
 
 tournament = Blueprint('tournament', __name__)
 
+date_format = '%Y-%m-%dT%H:%M'
+tournament_manage_endpoint = 'tournament.manage'
+tournament_list_endpoint = 'tournament.list'
+
+user_validation_error_message = 'You cannot edit tournament belonging to another user'
+date_validation_error_message = 'You cannot edit tournament that is past its start date'
 
 @tournament.route('/tournament/create')
 @login_required
@@ -27,15 +33,15 @@ def create_post():
         return redirect(url_for('tournament.create'))
 
     owner = current_user.id
-    id = uuid.uuid4().hex
+    uuid_id = uuid.uuid4().hex
 
-    new_tournament = Tournament(tournament_id=id, name=name, start_date=start_date, player_count=player_count,
+    new_tournament = Tournament(tournament_id=uuid_id, name=name, start_date=start_date, player_count=player_count,
                                 owner=owner)
 
     db.session.add(new_tournament)
     db.session.commit()
 
-    return redirect(url_for('tournament.manage', tournament_id=id))
+    return redirect(url_for(tournament_manage_endpoint, tournament_id=uuid_id))
 
 
 @tournament.route('/tournament/<string:tournament_id>')
@@ -61,29 +67,29 @@ def manage_post(tournament_id):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
     if tournament.owner != current_user.id:
-        flash('You cannot edit tournament belonging to another user')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        flash(user_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, '%Y-%m-%dT%H:%M') <= datetime.now():
-        flash('You cannot edit tournament that is past its start date')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+        flash(date_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     name = request.form.get('name')
 
     if name == "":
         flash('Please fill all fields.')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     players = Player.query.filter_by(tournament_id=tournament_id).all()
     if len(players) >= int(tournament.player_count):
         flash('Maximum number of players reached')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     player = Player.query.filter_by(name=name, tournament_id=tournament_id).first()
 
     if player:
         flash('Player already enrolled into the tournament')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     new_player = Player(tournament_id=tournament_id, name=name)
 
@@ -92,7 +98,7 @@ def manage_post(tournament_id):
 
     player_list = Player.query.filter_by(tournament_id=tournament_id)
 
-    return redirect(url_for('tournament.manage', tournament_id=tournament_id, list_of_players=player_list))
+    return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, list_of_players=player_list))
 
 
 @tournament.route('/tournament/<string:tournament_id>/<string:name>')
@@ -101,16 +107,16 @@ def manage_delete(tournament_id, name):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
     if tournament.owner != current_user.id:
-        flash('You cannot edit tournament belonging to another user')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        flash(user_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, '%Y-%m-%dT%H:%M') <= datetime.now():
-        flash('You cannot edit tournament that is past its start date')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+        flash(date_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     Player.query.filter_by(tournament_id=tournament_id, name=name).delete()
     db.session.commit()
-    return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
 
 @tournament.route('/tournament/list')
@@ -127,17 +133,17 @@ def remove(tournament_id):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
     if tournament.owner != current_user.id:
-        flash('You cannot edit tournament belonging to another user')
-        return redirect(url_for('tournament.list'))
+        flash('You cannot remove tournament belonging to another user')
+        return redirect(url_for(tournament_list_endpoint))
 
-    if datetime.strptime(tournament.start_date, '%Y-%m-%dT%H:%M') <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
         flash('You cannot remove tournament that is past its start date')
-        return redirect(url_for('tournament.list'))
+        return redirect(url_for(tournament_list_endpoint))
 
     Tournament.query.filter_by(tournament_id=tournament_id).delete()
     Player.query.filter_by(tournament_id=tournament_id).delete()
     db.session.commit()
-    return redirect(url_for('tournament.list'))
+    return redirect(url_for(tournament_list_endpoint))
 
 
 @tournament.route('/tournament/<string:tournament_id>/bracket/generate')
@@ -148,20 +154,20 @@ def generate_bracket(tournament_id):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
     if tournament.owner != current_user.id:
-        flash('You cannot edit tournament belonging to another user')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        flash(user_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, '%Y-%m-%dT%H:%M') <= datetime.now():
-        flash('You cannot edit tournament that is past its start date')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+        flash(date_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     if bracket:
         flash('Bracket already generated')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     if len(player_list) < int(tournament.player_count):
         flash('Please fill out all the players before generating the bracket')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     random.shuffle(player_list)
     half = len(player_list) // 2
@@ -171,7 +177,7 @@ def generate_bracket(tournament_id):
                           player2_name=player2.name, player1_score=0, player2_score=0, phase=1)
         db.session.add(new_match)
     db.session.commit()
-    return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
 
 @tournament.route('/tournament/<string:tournament_id>/score/save/<string:match_id>/<string:phase>', methods=['POST'])
@@ -180,12 +186,12 @@ def save_score(tournament_id, match_id, phase):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
     if tournament.owner != current_user.id:
-        flash('You cannot edit tournament belonging to another user')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        flash(user_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, '%Y-%m-%dT%H:%M') <= datetime.now():
-        flash('You cannot edit tournament that is past its start date')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+        flash(date_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     score1 = request.form.get('score1')
     score2 = request.form.get('score2')
@@ -201,7 +207,7 @@ def save_score(tournament_id, match_id, phase):
 
     db.session.commit()
 
-    return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=phase))
+    return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, phase=phase))
 
 
 @tournament.route('/tournament/<string:tournament_id>/phase/<int:phase>')
@@ -210,16 +216,16 @@ def generate_next_phase(tournament_id, phase):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
     if tournament.owner != current_user.id:
-        flash('You cannot edit tournament belonging to another user')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+        flash(user_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, '%Y-%m-%dT%H:%M') <= datetime.now():
-        flash('You cannot edit tournament that is past its start date')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id))
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+        flash(date_validation_error_message)
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
     if phase == 0:
         flash('This is a final phase')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=0))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, phase=0))
     matches = Match.query.filter_by(tournament_id=tournament_id, phase=phase).all()
 
     next_phase = phase + 1
@@ -227,12 +233,12 @@ def generate_next_phase(tournament_id, phase):
 
     if not matches:
         flash('Generate bracket first')
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=next_phase))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, phase=next_phase))
 
     for match in matches:
         if match.player1_score == 0 and match.player2_score == 0:
             flash('Cannot determine a winner. Resolve all drawn matches')
-            return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=next_phase))
+            return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, phase=next_phase))
         if match.player1_score > match.player2_score:
             player = Player.query.filter_by(name=match.player1_name).first()
             players.append(player)
@@ -241,10 +247,9 @@ def generate_next_phase(tournament_id, phase):
             players.append(player)
 
     if len(players) == 1:
-        tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
         tournament.winner = players[0].name
         db.session.commit()
-        return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=0))
+        return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, phase=0))
 
     random.shuffle(players)
     half = len(players) // 2
@@ -254,4 +259,4 @@ def generate_next_phase(tournament_id, phase):
                           player2_name=player2.name, player1_score=0, player2_score=0, phase=next_phase)
         db.session.add(new_match)
     db.session.commit()
-    return redirect(url_for('tournament.manage', tournament_id=tournament_id, phase=next_phase))
+    return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id, phase=next_phase))
