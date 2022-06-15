@@ -15,6 +15,7 @@ tournament_list_endpoint = 'tournament.list'
 user_validation_error_message = 'You cannot edit tournament belonging to another user'
 date_validation_error_message = 'You cannot edit tournament that is past its start date'
 
+
 @tournament.route('/tournament/create')
 @login_required
 def create():
@@ -66,11 +67,11 @@ def manage(tournament_id):
 def manage_post(tournament_id):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
-    if tournament.owner != current_user.id:
+    if tournament.owner != current_user.id and current_user.is_admin is False:
         flash(user_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now() and current_user.is_admin is False:
         flash(date_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
@@ -106,11 +107,11 @@ def manage_post(tournament_id):
 def manage_delete(tournament_id, name):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
-    if tournament.owner != current_user.id:
+    if tournament.owner != current_user.id and current_user.is_admin is False:
         flash(user_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now() and current_user.is_admin is False:
         flash(date_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
@@ -132,11 +133,11 @@ def list():
 def remove(tournament_id):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
-    if tournament.owner != current_user.id:
+    if tournament.owner != current_user.id and current_user.is_admin is False:
         flash('You cannot remove tournament belonging to another user')
         return redirect(url_for(tournament_list_endpoint))
 
-    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now() and current_user.is_admin is False:
         flash('You cannot remove tournament that is past its start date')
         return redirect(url_for(tournament_list_endpoint))
 
@@ -153,11 +154,11 @@ def generate_bracket(tournament_id):
     bracket = Match.query.filter_by(tournament_id=tournament_id).all()
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
-    if tournament.owner != current_user.id:
+    if tournament.owner != current_user.id and current_user.is_admin is False:
         flash(user_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now() and current_user.is_admin is False:
         flash(date_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
@@ -185,11 +186,11 @@ def generate_bracket(tournament_id):
 def save_score(tournament_id, match_id, phase):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
-    if tournament.owner != current_user.id:
+    if tournament.owner != current_user.id and current_user.is_admin is False:
         flash(user_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now() and current_user.is_admin is False:
         flash(date_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
@@ -215,11 +216,11 @@ def save_score(tournament_id, match_id, phase):
 def generate_next_phase(tournament_id, phase):
     tournament = Tournament.query.filter_by(tournament_id=tournament_id).first()
 
-    if tournament.owner != current_user.id:
+    if tournament.owner != current_user.id and current_user.is_admin is False:
         flash(user_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
-    if datetime.strptime(tournament.start_date, date_format) <= datetime.now():
+    if datetime.strptime(tournament.start_date, date_format) <= datetime.now() and current_user.is_admin is False:
         flash(date_validation_error_message)
         return redirect(url_for(tournament_manage_endpoint, tournament_id=tournament_id))
 
