@@ -12,10 +12,10 @@ App for managing single-elimination tournaments created using REST API architect
 1. Make sure you have Python version 3.x installed. To do so open Command Prompt and type ```python --version```. If no Python version is installed download and install [newest version](https://www.python.org/downloads/).
 2. Install virtualenv by typing in the Command Prompt ```pip3 install virtualenv```.
 3. Unzip the project directory
-4. Navigate to the project directory ```cd tournament/project```.
-5. Create new virtual environment ```py -m venv env```.
-6. Activate created virtual environment ```.\env\Scripts\activate.bat```
-7. Install required packages ```pip install -r requirements.txt```.
+4. Create new virtual environment ```py -m venv env```.
+5. Activate created virtual environment ```.\env\Scripts\activate.bat```
+6. Install required packages ```pip install -r requirements.txt```.
+7. Create environment variable `export FLASK_APP=project`
 8. Run the app ```flask run```.
 9. Go to http://127.0.0.1:5000/.
 
