@@ -1,5 +1,6 @@
 # single-elimination tournament
-App for managing single-elimination tournaments created using REST API architecture
+App for managing single-elimination tournaments created using REST API architecture.
+The source code for this project can also be found on https://github.com/MaciPaci/single-elimination-tournament
 
 ### Features
 - creating new tournament with defined date time and player count
