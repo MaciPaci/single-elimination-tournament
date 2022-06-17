@@ -25,7 +25,7 @@ The source code for this project can also be found on https://github.com/MaciPac
 1. Make sure you have Python version 3.x installed. To do so open Command Prompt and type ```python --version```. If no Python version is installed download and install [newest version](https://www.python.org/downloads/).
 2. Install virtualenv by typing in the Command Prompt ```pip3 install virtualenv```.
 3. Unzip the project directory / Get the project repository from GitHub ```git clone https://github.com/MaciPaci/single-elimination-tournament```.
-4. 4. Navigate to the project directory `cd single-elimination-tournament`.
+4. Navigate to the project directory `cd single-elimination-tournament`.
 5. Create new virtual environment ```virtualenv venv```.
 6. Activate created virtual environment ```source venv/bin/activate```
 7. Install required packages ```pip install -r requirements.txt```.
