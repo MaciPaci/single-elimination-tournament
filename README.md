@@ -17,7 +17,7 @@ The source code for this project can also be found on https://github.com/MaciPac
 5. Create new virtual environment ```py -m venv env```.
 6. Activate created virtual environment ```.\env\Scripts\activate.bat```
 7. Install required packages ```pip install -r requirements.txt```.
-8. Create environment variable `export FLASK_APP=project`
+8. Create environment variable `set FLASK_APP=project`
 9. Run the app ```flask run```.
 10. Go to http://127.0.0.1:5000/.
 
@@ -29,7 +29,7 @@ The source code for this project can also be found on https://github.com/MaciPac
 5. Create new virtual environment ```virtualenv venv```.
 6. Activate created virtual environment ```source venv/bin/activate```
 7. Install required packages ```pip install -r requirements.txt```.
-8. Create environment variable `set FLASK_APP=project`
+8. Create environment variable `export FLASK_APP=project`
 9. Run the app ```flask run```.
 10. Go to http://127.0.0.1:5000/.
 
